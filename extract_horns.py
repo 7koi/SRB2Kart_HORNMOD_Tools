@@ -8,7 +8,7 @@ import zipfile
 
 
 def clean_line(line):
-    cleaned_line = line.replace(' = ', ': ').replace('/', ',').replace('\\', '').replace('base: ', '"base":' ).replace('name: ', '"name":' ).replace('info: ', '"info":' ).replace('extags: ', '"extags":' )
+    cleaned_line = line.replace(' = ', ': ').replace('\\"', '').replace('\\', '\\\\').replace('base: ', '"base":' ).replace('name: ', '"name":' ).replace('info: ', '"info":' ).replace('extags: ', '"extags":' )
     # remove comments from the end of the line
     while cleaned_line[::-1].find('--') != -1 and cleaned_line[::-1].find('--') < cleaned_line[::-1].find('}'):
         comment_index = cleaned_line[::-1].find('--')
@@ -17,6 +17,12 @@ def clean_line(line):
     if cleaned_line[-1] == ',':
         cleaned_line = cleaned_line[:-1]
     return cleaned_line
+
+
+def windows_filename(filename):
+    for a in '/\\:*"?<>|':
+        filename = filename.replace(a, '')
+    return filename
 
 
 if __name__ == '__main__':
@@ -43,7 +49,7 @@ if __name__ == '__main__':
                     print(cleaned_line)
                     info_obj = json.loads(cleaned_line)
                     horn_filename = info_obj['name'].replace('sfx_', 'DS').upper()
-                    horn_target_filename = info_obj['info'] + '.ogg'
+                    horn_target_filename = windows_filename(info_obj['info']) + '.ogg'
 
                     if horn_filename in ds_paths:
                         horn_source_path = ds_paths[horn_filename]
