@@ -26,7 +26,7 @@ def copy_horns_to_archive(sourcedir, destdir, archive):
             ogg_file = ogg_file[:-4]
         horns.append((ogg_file, ogg_hash))
         with open(ogg_path, 'rb') as source_file:
-            with archive.open(os.path.join(destdir, f'DS{ogg_hash}.ogg'), 'w') as dest_file:
+            with archive.open(f'{destdir}/DS{ogg_hash}.ogg', 'w') as dest_file:
                 shutil.copyfileobj(source_file, dest_file)
     return horns
 
@@ -45,5 +45,5 @@ if __name__ == '__main__':
         hell_lua_lines = horns_to_lua(hellhorns, hell=True)
         lua_text = lua_lines + hell_lua_lines
         output_pk3_file.mkdir('lua')
-        with output_pk3_file.open(os.path.join('lua', 'basehorns.lua'), 'w') as lua_file:
+        with output_pk3_file.open('lua/basehorns.lua', 'w') as lua_file:
             lua_file.write(lua_text.encode('utf-8'))
